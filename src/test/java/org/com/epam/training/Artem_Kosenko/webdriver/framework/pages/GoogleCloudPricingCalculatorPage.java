@@ -1,58 +1,50 @@
-package org.com.epam.training.Artem_Kosenko.webdriver.Task3;
+package org.com.epam.training.Artem_Kosenko.webdriver.framework.pages;
 
+import lombok.extern.log4j.Log4j2;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 
-import java.awt.*;
-import java.awt.datatransfer.DataFlavor;
-import java.awt.datatransfer.UnsupportedFlavorException;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GoogleCloudPricingCalculatorPage extends AbstractPage{
+@Log4j2
+public class GoogleCloudPricingCalculatorPage extends AbstractBasePage {
 
+    private static final String BASE_URL = "https://cloud.google.com/products/calculator";
     private static final String DEFAULT_DROPDOWN_OPTION_XPATH = "//div[contains(@class, 'md-active')]" +
             "//md-option/div[contains(text(), '%s')]";
     private static final String PRODUCT_NAME_XPATH = "//div[contains(@title, '%s')]";
 
-    private final By mainFrame = By.xpath("//*[@id='cloud-site']/devsite-iframe/iframe");
-    private final By innerFrame = By.id("myFrame");
-    private final By GPUTypeDropdown = By.xpath("//md-select[contains(@id, 'select_505')]");
-    private final By resultBlock = By.xpath("//div[contains(@class, 'md-list-item-text')]");
-    private final By totalMonthlyPrice = By.xpath("//*[@id='resultBlock']/md-card/md-card-content//div[@class='cpc-cart-total']/h2/b");
-    private final By emailInput = By.cssSelector("form[name='emailForm'] input[type='email']");
-
-    @FindBy(xpath = "//input[@id='input_99']")
+    @FindBy(xpath = "//form[@name='ComputeEngineForm']/div/div/md-input-container/input[@name='quantity']")
     private WebElement numberOfInstancesInput;
 
-    @FindBy(xpath = "//md-select[contains(@id, 'select_112')]")
+    @FindBy(xpath = "//md-select[contains(@aria-label, 'Operating System')]")
     private WebElement operatingSystemDropdown;
 
-    @FindBy(xpath = "//md-select[contains(@id, 'select_115')]")
+    @FindBy(xpath = "//md-select[contains(@aria-label, 'VM Class')]")
     private WebElement VMClassDropdown;
 
-    @FindBy(xpath = "//md-select[contains(@id, 'select_123')]")
+    @FindBy(xpath = "//md-select[contains(@aria-label, 'Series')]")
     private WebElement instanceSeriesDropdown;
 
-    @FindBy(xpath = "//md-select[contains(@id, 'select_125')]")
+    @FindBy(xpath = "//md-select[contains(@aria-label, 'Instance type')]")
     private WebElement instanceTypeDropdown;
 
     @FindBy(xpath = "//md-checkbox[@ng-model='listingCtrl.computeServer.addGPUs']/div[contains(@class, 'md-container')]")
     private WebElement addGPUsCheckBox;
 
-    @FindBy(xpath = "//md-select[contains(@id, 'select_507')]")
+    @FindBy(xpath = "//md-select[contains(@aria-label, 'Number of GPUs')]")
     private WebElement numberOfGPUsDropdown;
 
-    @FindBy(xpath = "//form[@name='ComputeEngineForm']//md-select[contains(@id, 'select_464')]")
+    @FindBy(xpath = "//form[@name='ComputeEngineForm']//md-select[contains(@aria-label, 'Local SSD')]")
     private WebElement localSSDDropdown;
 
-    @FindBy(xpath = "//md-select[contains(@id, 'select_131')]")
+    @FindBy(xpath = "//form[@name='ComputeEngineForm']//md-select[contains(@aria-label, 'Datacenter location')]")
     private WebElement datacenterLocationDropdown;
 
-    @FindBy(xpath = "//md-select[contains(@id, 'select_138')]")
+    @FindBy(xpath = "//form[@name='ComputeEngineForm']//md-select[contains(@aria-label, 'Committed usage')]")
     private WebElement committedUsageDropdown;
 
     @FindBy(xpath = "//form[@name='ComputeEngineForm']/div/button")
@@ -61,80 +53,79 @@ public class GoogleCloudPricingCalculatorPage extends AbstractPage{
     @FindBy(id = "Email Estimate")
     private WebElement emailButton;
 
-    @FindBy(xpath = "//*[@id='dialogContent_621']/form/md-dialog-actions/button[2]")
+    @FindBy(xpath = "//*[@id='dialogContent_622']/form/md-dialog-actions/button[2]")
     private WebElement sendEmailButton;
-
-    @FindBy(xpath = "//div[@id='select_container_132']")
+    @FindBy(xpath = "//div[@id='select_container_133']")
     private WebElement dataLocationOption;
-    @FindBy(xpath = "//div[@id='select_container_465']")
+    @FindBy(xpath = "//div[@id='select_container_466']")
     private WebElement localSSDOption;
-    @FindBy(xpath = "//div[@id='select_container_508']")
+    @FindBy(xpath = "//div[@id='select_container_509']")
     private WebElement numberOfGpuOption;
-    @FindBy(xpath = "//div[@id='select_container_506']")
-    private WebElement  selectGpuTypeOption;
-    @FindBy(xpath = "//div[@id='select_container_126']")
+    @FindBy(xpath = "//div[@id='select_container_507']")
+    private WebElement selectGpuTypeOption;
+    @FindBy(xpath = "//div[@id='select_container_127']")
     private WebElement instanceTypeOption;
-    @FindBy(xpath = "//div[@id='select_container_124']")
+    @FindBy(xpath = "//div[@id='select_container_125']")
     private WebElement instanceSeriesOption;
+
+    private final By mainFrame = By.xpath("//*[@id='cloud-site']/devsite-iframe/iframe");
+    private final By innerFrame = By.id("myFrame");
+    private final By GPUTypeDropdown = By.xpath("//md-select[contains(@aria-label, 'GPU type')]");
+    private final By resultBlock = By.xpath("//div[contains(@class, 'md-list-item-text')]");
+    private final By totalMonthlyPrice = By.xpath("//*[@id='resultBlock']/md-card/md-card-content//div[@class='cpc-cart-total']/h2/b");
+
+    private final By emailInput = By.cssSelector("form[name='emailForm'] input[type='email']");
 
     public GoogleCloudPricingCalculatorPage(WebDriver driver) {
         super(driver);
     }
 
-    public GoogleCloudPricingCalculatorPage calculatePrice(FormData formData) {
+    public GoogleCloudPricingCalculatorPage goToTheMainForm() {
+        switchToFrame(mainFrame);
+        switchToFrame(innerFrame);
+        log.info("Switch to main form frame");
+        return this;
+    }
 
-        goToTheMainForm();
-        selectDropdownOption(PRODUCT_NAME_XPATH, formData.getProductName());
-        numberOfInstancesInput.sendKeys(formData.getNumberOfInstances());
-        selectOperatingSystem(formData.getOperationSystem());
-        selectVMClass(formData.getVMClass());
-        selectInstanceSeries(formData.getInstanceSeries());
-        selectInstanceType(formData.getInstanceType());
-        addGPUsCheckBox.click();
-        selectGPUType(formData.getGPUType());
-        selectNumberOfGPUs(formData.getNumberOfGPUs());
-        selectLocalSSD(formData.getLocalSSD());
-        selectDatacenterLocation(formData.getDatacenterLocation());
-        selectCommittedUsageTime(formData.getCommittedUsage());
+    public GoogleCloudPricingCalculatorPage clickAddToEstimateButton() {
         addToEstimateButton.click();
         return this;
     }
 
-    public GoogleCloudPricingCalculatorPage goToTheMainForm() {
-        switchToFrame(mainFrame);
-        switchToFrame(innerFrame);
+    public GoogleCloudPricingCalculatorPage selectAddGPUsCheckBox() {
+        addGPUsCheckBox.click();
         return this;
     }
 
-    public GoogleCloudPricingCalculatorPage selectProduct (String productName) {
+    public GoogleCloudPricingCalculatorPage selectProduct(String productName) {
         waitPresenceOfElementLocated(By.xpath(String.format(PRODUCT_NAME_XPATH, productName)))
                 .click();
         return this;
     }
 
-    public GoogleCloudPricingCalculatorPage pressTheEMAILButton() {
+    public GoogleCloudPricingCalculatorPage setNumberOfInstances(String numberOfInstances) {
+        numberOfInstancesInput.sendKeys(numberOfInstances);
+        return this;
+    }
+
+    public GoogleCloudPricingCalculatorPage clickTheEMAILButton() {
         goToTheMainForm();
+        log.info("Click Send by Email button");
         emailButton.click();
         return this;
     }
 
-    public GoogleCloudPricingCalculatorPage sendEstimatedFormToEmail() {
-        try {
-            String copiedText = (String) Toolkit.getDefaultToolkit().getSystemClipboard().getData(DataFlavor.stringFlavor);
-            waitPresenceOfElementLocated(emailInput).sendKeys(copiedText);
-        } catch (UnsupportedFlavorException | IOException e) {
-            e.printStackTrace();
-        }
+    public GoogleCloudPricingCalculatorPage sendEstimatedFormToEmail(String emailAddress) {
+        waitPresenceOfElementLocated(emailInput)
+                .sendKeys(emailAddress);
         sendEmailButton.click();
         return this;
     }
 
     public List<String> getCalculatedForm() {
         List<String> calculatedFormText = new ArrayList<>();
-        List<WebElement> calculatedForm = waitPresenceOfAllElementsLocatedBy(resultBlock);
-        for (WebElement element : calculatedForm) {
-            calculatedFormText.add(element.getText());
-        }
+        waitPresenceOfAllElementsLocatedBy(resultBlock)
+                .forEach(element -> calculatedFormText.add(element.getText()));
         return calculatedFormText;
     }
 
@@ -199,6 +190,12 @@ public class GoogleCloudPricingCalculatorPage extends AbstractPage{
     public GoogleCloudPricingCalculatorPage selectCommittedUsageTime(String committedUsage) {
         committedUsageDropdown.click();
         selectDropdownOption(DEFAULT_DROPDOWN_OPTION_XPATH, committedUsage);
+        return this;
+    }
+
+    @Override
+    public GoogleCloudPricingCalculatorPage openPage() {
+        driver.get(BASE_URL);
         return this;
     }
 }
